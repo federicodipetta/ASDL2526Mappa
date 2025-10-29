@@ -30,9 +30,21 @@ public class Fermata implements ComparabileInDistanza<Fermata>, Comparable<Ferma
     }
 
     @Override
-    public int compareTo(Fermata other) {
-        //TODO: implementare correttamente il compareTo
-        return 0;
+    public int compareTo(Fermata other)
+    {
+        if(this.posizione < other.posizione)
+        {
+            return -1;
+        }
+        else if (this.posizione > other.posizione)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+
     }
 
     public String getNome() {

@@ -77,8 +77,28 @@ public class Mappa {
      * @param arrivo fermata di arrivo
      * @return true se esiste un percorso possibile, false altrimenti
      */
-    public boolean percorsoPossibile(Fermata partenza, Fermata arrivo) {
-        //TODO: implementare il metodo
+    public boolean percorsoPossibile(Fermata partenza, Fermata arrivo)
+    {
+        if (partenza == null || arrivo == null)
+            throw new NullPointerException("Nessuna delle due fermate può essere null");
+        if(partenza.equals(arrivo))
+            throw new IllegalArgumentException("Le due fermate non possono essere uguali");
+        //Controllo se esiste un tragitto diretto
+        if (tragittoPossibile(partenza, arrivo))
+            return true;
+
+        //Controllo se esiste un percorso con due mezzi
+        for (Mezzo m1 : mezzi) {
+            for (Mezzo m2 : mezzi) {
+                if (m1 == m2) continue; // evita di usare lo stesso mezzo due volte
+
+                // cerco una fermata intermedia comune
+                for (Fermata intermedia : fermate) {
+                    if (m1.possibile(partenza, intermedia) && m2.possibile(intermedia, arrivo))
+                        return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -91,9 +111,38 @@ public class Mappa {
      * @throws NullPointerException Se una delle due fermate è null.
      * @throws IllegalArgumentException Se le due fermate sono uguali, non fanno parte della mappa oppure non esiste un tragitto possibile tra le due fermate.
      */
-    public Percorso percorsoPiuVeloce(Fermata partenza, Fermata arrivo) {
-       //TODO: implementare il metodo
-         return null;
+    public Percorso percorsoPiuVeloce(Fermata partenza, Fermata arrivo)
+    {
+        if (partenza == null || arrivo == null)
+            throw new NullPointerException("Nessuna delle due fermate può essere null");
+        if (partenza.equals(arrivo))
+            throw new IllegalArgumentException("Le due fermate non possono essere uguali");
+        if (!percorsoPossibile(partenza, arrivo))
+            throw new IllegalArgumentException("Non esiste un percorso possibile tra le due fermate");
+
+        Percorso migliore = null;
+        int tempoMinimo = Integer.MAX_VALUE;
+
+        //Percorsi con due mezzi
+        for (Mezzo m1 : mezzi) {
+            for (Mezzo m2 : mezzi) {
+                for (Fermata intermedia : fermate) {
+                    if (m1.possibile(partenza, intermedia) && m2.possibile(intermedia, arrivo)) {
+                        int tempo = m1.tempoImpiegato(partenza, intermedia) + m2.tempoImpiegato(intermedia, arrivo);
+                        if (tempo < tempoMinimo) {
+                            tempoMinimo = tempo;
+                            migliore = new Percorso(new Fermata[]{partenza, intermedia, arrivo},
+                                    new Mezzo[]{m1, m2});
+                        }
+                    }
+                }
+            }
+        }
+
+        if (migliore == null)
+            throw new IllegalArgumentException("Non esiste alcun percorso possibile");
+
+        return migliore;
     }
 
 
