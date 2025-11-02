@@ -123,6 +123,13 @@ public class Mappa {
         Percorso migliore = null;
         int tempoMinimo = Integer.MAX_VALUE;
 
+        if (tragittoPossibile(partenza, arrivo)) {
+            migliore = new Percorso(
+                    new Fermata[] { partenza, arrivo },
+                    new Mezzo[] { mezzoPiuVeloce(partenza, arrivo) }
+            );
+        }
+
         //Percorsi con due mezzi
         for (Mezzo m1 : mezzi) {
             for (Mezzo m2 : mezzi) {

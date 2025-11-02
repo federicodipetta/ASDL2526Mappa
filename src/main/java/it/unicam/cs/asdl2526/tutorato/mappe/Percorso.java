@@ -1,5 +1,8 @@
 package it.unicam.cs.asdl2526.tutorato.mappe;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * Classe di tipo Percorso che rappresenta un percorso tra fermate utilizzando mezzi.
  * @author Federico Di Petta
@@ -65,34 +68,14 @@ public class Percorso
      * @param other l'altro percorso
      */
     @Override
-    public boolean equals(Object other)
-    {
-       if(other instanceof Percorso)
-       {
-           for(int i = 0; i < fermate.length - 1; i++)
-           {
-               if(!(this.fermate[i].equals(((Percorso) other).fermate[i]) && this.mezzi[i].equals(((Percorso) other).mezzi[i])))
-               {
-                   return false;
-               }
-           }
-           return true;
-       }
-       else
-       {
-           return false;
-       }
+    public boolean equals(Object other) {
+        if (!(other instanceof Percorso)) return false;
+        Percorso percorso = (Percorso) other;
+        return Objects.deepEquals(this.fermate, percorso.fermate) && Objects.deepEquals(this.mezzi, percorso.mezzi);
     }
 
     @Override
-    public int hashCode()
-    {
-        int valoreHash = 0;
-        for (int i = 0; i < fermate.length - 1; i++)
-        {
-            valoreHash = fermate[i].hashCode() + mezzi[i].hashCode();
-        }
-        return valoreHash;
+    public int hashCode() {
+        return Objects.hash(Arrays.hashCode(this.fermate), Arrays.hashCode(this.mezzi));
     }
-    
 }
